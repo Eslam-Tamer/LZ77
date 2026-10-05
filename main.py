@@ -1,10 +1,11 @@
 import sys
 
+
 def lz77_compress(text, search_buffer_size=31, lookahead_buffer_size=15):
     pass
 
+
 def lz77_decompress(compressed):
-    
     decompressedText = ""
     # tag[0] = offset, tag[1] = length, tag[2] = next_symbol
 
@@ -20,6 +21,7 @@ def lz77_decompress(compressed):
             decompressedText += tag[2]
 
     return decompressedText
+
 
 def menu():
     # Display the main program menu
@@ -85,6 +87,8 @@ def get_tag():
             # Convert "space" into an actual space character
             if next_symbol.lower() == "space":
                 next_symbol = " "
+            elif next_symbol.lower() == "null":
+                next_symbol = ""
 
             return offset, length, next_symbol
 
@@ -95,7 +99,6 @@ def get_tag():
 
 
 def main():
-
     while True:
 
         menu()
@@ -134,7 +137,6 @@ def main():
             tags = []
 
             for i in range(number_of_tags):
-
                 print(f"\nTag {i + 1}:")
 
                 offset, length, next_symbol = get_tag()
