@@ -4,7 +4,22 @@ def lz77_compress(text, search_buffer_size=31, lookahead_buffer_size=15):
     pass
 
 def lz77_decompress(compressed):
-    pass
+    
+    decompressedText = ""
+    # tag[0] = offset, tag[1] = length, tag[2] = next_symbol
+
+    for tag in compressed:
+        if tag[0] == 0 and tag[1] == 0:
+            decompressedText += tag[2]
+        else:
+            offset = len(decompressedText) - tag[0]
+            for i in range(tag[1]):
+                decompressedText += decompressedText[offset]
+                offset += 1
+
+            decompressedText += tag[2]
+
+    return decompressedText
 
 def menu():
     # Display the main program menu
