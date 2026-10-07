@@ -1,9 +1,8 @@
 import sys
 
 
-def lz77_compress(text, search_buffer_size=31, lookahead_buffer_size=15):
+def lz77_compress(text, search_buffer_size, lookahead_buffer_size):
     pass
-
 
 def lz77_decompress(compressed):
     decompressedText = ""
@@ -118,12 +117,43 @@ def main():
 
             text = input("Enter the text: ")
 
-            # Optional validation
             if text == "":
                 print("Invalid input! Text cannot be empty.\n")
                 continue
 
-            compressed_data = lz77_compress(text)
+            # Get Search Buffer Size
+            while True:
+                try:
+                    search_buffer_size = int(
+                        input("Enter search buffer size: ")
+                    )
+
+                    if search_buffer_size <= 0:
+                        print("Size must be greater than 0.\n")
+                        continue
+
+                    break
+
+                except ValueError:
+                    print("Invalid input! Please enter a positive integer.\n")
+
+            # Get Lookahead Buffer Size
+            while True:
+                try:
+                    lookahead_buffer_size = int(
+                        input("Enter lookahead buffer size: ")
+                    )
+
+                    if lookahead_buffer_size <= 0:
+                        print("Size must be greater than 0.\n")
+                        continue
+
+                    break
+
+                except ValueError:
+                    print("Invalid input! Please enter a positive integer.\n")
+
+            compressed_data = lz77_compress(text,search_buffer_size,lookahead_buffer_size )
 
             print(f"Compressed data: {compressed_data}\n")
 
