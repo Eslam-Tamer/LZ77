@@ -1,8 +1,53 @@
 import sys
+from dataclasses import dataclass
 
+@dataclass
+class Tag:
+    offset: int = 0
+    length_of_match: int = 0
+    next_symbol: str = ''
+    
+def lz77_compress(input_str, search_buffer, look_ahead_buffer):
+    compressed = []
 
-def lz77_compress(text, search_buffer_size, lookahead_buffer_size):
-    pass
+    input_length = len(input_str)
+    index = 0
+
+    while index < input_length:
+        # Initialization and default settings for a new Tag
+        new_tag = Tag()
+        new_tag.offset = 0
+        new_tag.length_of_match = 0
+        new_tag.next_symbol = input_str[index]
+
+        # Check max offset
+        max_offset = index if index < search_buffer else search_buffer
+
+        # Check max match length
+        max_search_length = (
+            input_length - index
+            if (index + look_ahead_buffer) > input_length
+            else look_ahead_buffer
+        )
+
+        # Loop to check for matches
+        for offset in range(1, max_offset + 1):
+            length = 0
+
+            # Checking the match length based on the maximum match length
+            while (length < max_search_length and input_str[index - offset + length] == input_str[index + length]):
+                length += 1
+
+            # Update the Tag if a better match is found
+            if length > new_tag.length_of_match:
+                new_tag.offset = offset
+                new_tag.length_of_match = length
+                new_tag.next_symbol = input_str[index + length] if (index + length) < input_length else ''
+
+        compressed.append(new_tag)
+        index += new_tag.length_of_match + 1
+
+    return compressed
 
 def lz77_decompress(compressed):
     decompressedText = ""
@@ -153,9 +198,8 @@ def main():
                 except ValueError:
                     print("Invalid input! Please enter a positive integer.\n")
 
-            compressed_data = lz77_compress(text,search_buffer_size,lookahead_buffer_size )
-
-            print(f"Compressed data: {compressed_data}\n")
+            for tag in lz77_compress(text,search_buffer_size,lookahead_buffer_size):
+                    print(f"<{tag.offset},{tag.length_of_match},{tag.next_symbol}>")
 
         # ==============================
         # Decompress
