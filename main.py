@@ -1,12 +1,14 @@
 import sys
 from dataclasses import dataclass
 
+
 @dataclass
 class Tag:
     offset: int = 0
     length_of_match: int = 0
     next_symbol: str = ''
-    
+
+
 def lz77_compress(input_str, search_buffer, look_ahead_buffer):
     compressed = []
 
@@ -48,6 +50,7 @@ def lz77_compress(input_str, search_buffer, look_ahead_buffer):
         index += new_tag.length_of_match + 1
 
     return compressed
+
 
 def lz77_decompress(compressed):
     decompressedText = ""
@@ -102,12 +105,11 @@ def get_tag():
         try:
             user_input = input(
                 "Enter offset, length, and next symbol "
-                "(use 'space' for a space character): "
+                "(use 'space' for a space, 'null' for no symbol): "
             )
 
             parts = user_input.split()
 
-            # A tag must contain exactly 3 values
             if len(parts) != 3:
                 print(
                     "Invalid tag! Please enter exactly "
@@ -119,7 +121,6 @@ def get_tag():
             length = int(parts[1])
             next_symbol = parts[2]
 
-            # Offset and length cannot be negative
             if offset < 0:
                 print("Invalid offset! Offset cannot be negative.\n")
                 continue
@@ -128,11 +129,21 @@ def get_tag():
                 print("Invalid length! Length cannot be negative.\n")
                 continue
 
-            # Convert "space" into an actual space character
-            if next_symbol.lower() == "space":
-                next_symbol = " "
-            elif next_symbol.lower() == "null":
+            # No next symbol
+            if next_symbol.lower() == "null":
                 next_symbol = ""
+
+            # Space character
+            elif next_symbol.lower() == "space":
+                next_symbol = " "
+
+            # Normal character: must be exactly one character
+            elif len(next_symbol) != 1:
+                print(
+                    "Invalid next symbol! "
+                    "It must be one character, 'space', or 'null'.\n"
+                )
+                continue
 
             return offset, length, next_symbol
 
@@ -140,7 +151,6 @@ def get_tag():
             print(
                 "Invalid input! Offset and length must be numbers.\n"
             )
-
 
 def main():
     while True:
@@ -198,8 +208,8 @@ def main():
                 except ValueError:
                     print("Invalid input! Please enter a positive integer.\n")
 
-            for tag in lz77_compress(text,search_buffer_size,lookahead_buffer_size):
-                    print(f"<{tag.offset},{tag.length_of_match},{tag.next_symbol}>")
+            for tag in lz77_compress(text, search_buffer_size, lookahead_buffer_size):
+                print(f"<{tag.offset},{tag.length_of_match},{tag.next_symbol}>")
 
         # ==============================
         # Decompress
